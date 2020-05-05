@@ -19,24 +19,127 @@ class MyApp extends StatelessWidget {
               displayColor: Colors.grey,
             ),
       ),
-      home: MyHomePage(title: 'Pomodoro Time Manager'),
+      home: HomePage(title: 'Pomodoro Time Manager'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class HomePage extends StatefulWidget {
+  HomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomePageState extends State<HomePage> {
+  var _pomodoros = [
+    0,
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  TableRow getHeader() {
+    return TableRow(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          margin: EdgeInsets.all(2),
+          decoration: BoxDecoration(color: Colors.blue.shade50),
+          child: Text(
+            "Task".toUpperCase(),
+            textAlign: TextAlign.center,
+            style: Theme
+                .of(context)
+                .textTheme
+                .headline6,
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          margin: EdgeInsets.all(2),
+          decoration: BoxDecoration(color: Colors.blue.shade50),
+          child: Text(
+            "Pomodoros Allocated".toUpperCase(),
+            textAlign: TextAlign.center,
+            style: Theme
+                .of(context)
+                .textTheme
+                .headline6,
+          ),
+        ),
+      ],
+    );
+  }
+
+  TableRow getPomodoroRow(int rowIndex) {
+    return new TableRow(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          margin: EdgeInsets.all(2),
+          decoration: BoxDecoration(color: Colors.purple.shade50),
+          child: TextField(
+            decoration: InputDecoration(border: InputBorder.none),
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          margin: EdgeInsets.all(2),
+          decoration: BoxDecoration(color: Colors.purple.shade50),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Container(
+                constraints: BoxConstraints.tightFor(width: 200, height: 50),
+                child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    return Checkbox(
+                      value: false,
+                      onChanged: (bool value) {},
+                    );
+                  },
+                  itemCount: _pomodoros[rowIndex],
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemExtent: 50,
+                ),
+              ),
+              Row(
+                children: <Widget>[
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        if (_pomodoros[rowIndex] > 0) _pomodoros[rowIndex]--;
+                      });
+                    },
+                    icon: Icon(Icons.remove),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _pomodoros[rowIndex]++;
+                      });
+                    },
+                    icon: Icon(Icons.add),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var dateFormat = new DateFormat('dd MMM yyyy');
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -50,10 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 Table(
                   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  columnWidths: {
-                    0: IntrinsicColumnWidth(),
-                    1: FlexColumnWidth(1)
-                  },
+                  columnWidths: {0: IntrinsicColumnWidth(), 1: FlexColumnWidth(1)},
                   children: <TableRow>[
                     TableRow(
                       children: <Widget>[
@@ -71,12 +171,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 5),
                           margin: EdgeInsets.all(2),
-                          decoration:
-                              BoxDecoration(color: Colors.purple.shade50),
+                          decoration: BoxDecoration(color: Colors.purple.shade50),
                           child: TextField(
                             textAlign: TextAlign.center,
-                            decoration:
-                                InputDecoration(border: InputBorder.none),
+                            decoration: InputDecoration(border: InputBorder.none),
                           ),
                         ),
                       ],
@@ -97,8 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 5),
                           margin: EdgeInsets.all(2),
-                          decoration:
-                              BoxDecoration(color: Colors.purple.shade50),
+                          decoration: BoxDecoration(color: Colors.purple.shade50),
                           child: Text(dateFormat.format(DateTime.now())),
                           alignment: Alignment.center,
                           height: 50,
@@ -121,12 +218,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 5),
                           margin: EdgeInsets.all(2),
-                          decoration:
-                              BoxDecoration(color: Colors.purple.shade50),
+                          decoration: BoxDecoration(color: Colors.purple.shade50),
                           child: TextField(
                             textAlign: TextAlign.center,
-                            decoration:
-                                InputDecoration(border: InputBorder.none),
+                            decoration: InputDecoration(border: InputBorder.none),
                           ),
                         ),
                       ],
@@ -146,76 +241,8 @@ class _MyHomePageState extends State<MyHomePage> {
               defaultColumnWidth: IntrinsicColumnWidth(),
               defaultVerticalAlignment: TableCellVerticalAlignment.top,
               children: <TableRow>[
-                TableRow(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
-                      margin: EdgeInsets.all(2),
-                      decoration: BoxDecoration(color: Colors.blue.shade50),
-                      child: Text(
-                        "Task".toUpperCase(),
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
-                      margin: EdgeInsets.all(2),
-                      decoration: BoxDecoration(color: Colors.blue.shade50),
-                      child: Text(
-                        "Pomodoros Allocated".toUpperCase(),
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                    ),
-                  ],
-                ),
-                TableRow(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
-                      margin: EdgeInsets.all(2),
-                      decoration: BoxDecoration(color: Colors.purple.shade50),
-                      child: TextField(
-                        decoration: InputDecoration(border: InputBorder.none),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
-                      margin: EdgeInsets.all(2),
-                      decoration: BoxDecoration(color: Colors.purple.shade50),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Checkbox(
-                            value: false,
-                            onChanged: (bool value) {},
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                TableRow(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.all(2),
-                      padding: EdgeInsets.symmetric(horizontal: 5),
-                      decoration: BoxDecoration(color: Colors.purple.shade50),
-                      child: TextField(
-                        decoration: InputDecoration(border: InputBorder.none),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.all(2),
-                      padding: EdgeInsets.symmetric(horizontal: 5),
-                      decoration: BoxDecoration(color: Colors.purple.shade50),
-                      child: TextField(
-                        decoration: InputDecoration(border: InputBorder.none),
-                      ),
-                    ),
-                  ],
-                ),
+                getHeader(),
+                getPomodoroRow(0),
               ],
             ),
           ),
