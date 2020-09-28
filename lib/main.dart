@@ -45,98 +45,110 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  TableRow getHeader() {
-    return TableRow(
+  Row getHeader() {
+    return Row(
       children: <Widget>[
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 5),
-          margin: EdgeInsets.all(2),
-          decoration: BoxDecoration(color: Colors.blue.shade50),
-          child: Text(
-            "Task".toUpperCase(),
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline6,
+        Expanded(
+          flex: 1,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            margin: EdgeInsets.all(2),
+            decoration: BoxDecoration(color: Colors.blue.shade50),
+            child: Text(
+              "Task".toUpperCase(),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headline6,
+            ),
           ),
         ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 5),
-          margin: EdgeInsets.all(2),
-          decoration: BoxDecoration(color: Colors.blue.shade50),
-          child: Text(
-            "Pomodoros Allocated".toUpperCase(),
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline6,
+        Expanded(
+          flex: 1,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            margin: EdgeInsets.all(2),
+            decoration: BoxDecoration(color: Colors.blue.shade50),
+            child: Text(
+              "Pomodoros Allocated".toUpperCase(),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headline6,
+            ),
           ),
         ),
       ],
     );
   }
 
-  TableRow getPomodoroRow(int rowIndex) {
-    return new TableRow(
+  Row getPomodoroRow(int rowIndex) {
+    return new Row(
       children: <Widget>[
-        Container(
-          height: 50,
-          padding: EdgeInsets.symmetric(horizontal: 5),
-          margin: EdgeInsets.all(2),
-          decoration: BoxDecoration(color: Colors.purple.shade50),
-          child: TextField(
-            decoration: InputDecoration(border: InputBorder.none),
+        Expanded(
+          flex: 1,
+          child: Container(
+            height: 50,
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            margin: EdgeInsets.all(2),
+            decoration: BoxDecoration(color: Colors.purple.shade50),
+            child: TextField(
+              decoration: InputDecoration(border: InputBorder.none),
+            ),
           ),
         ),
-        Container(
-          height: 50,
-          padding: EdgeInsets.symmetric(horizontal: 5),
-          margin: EdgeInsets.all(2),
-          decoration: BoxDecoration(color: Colors.purple.shade50),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Container(
-                constraints: BoxConstraints.tightForFinite(width: double.infinity, height: 50),
-                child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    return Checkbox(
-                      value: _pomodoros[rowIndex][index],
-                      onChanged: (bool value) {
+        Expanded(
+          flex: 1,
+          child: Container(
+            height: 50,
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            margin: EdgeInsets.all(2),
+            decoration: BoxDecoration(color: Colors.purple.shade50),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Container(
+                  constraints: BoxConstraints.tightForFinite(width: double.infinity, height: 50),
+                  child: ListView.builder(
+                    itemBuilder: (context, index) {
+                      return Checkbox(
+                        value: _pomodoros[rowIndex][index],
+                        onChanged: (bool value) {
+                          setState(() {
+                            _pomodoros[rowIndex][index] = value;
+                            _pomodoros[rowIndex].sort((a, b) => a == b
+                                ? 0
+                                : a
+                                    ? -1
+                                    : 1);
+                          });
+                        },
+                      );
+                    },
+                    itemCount: max(1, _pomodoros[rowIndex].length),
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                  ),
+                ),
+                Row(
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () {
                         setState(() {
-                          _pomodoros[rowIndex][index] = value;
-                          _pomodoros[rowIndex].sort((a, b) => a == b
-                              ? 0
-                              : a
-                                  ? -1
-                                  : 1);
+                          if (_pomodoros[rowIndex].length > 1) _pomodoros[rowIndex].removeLast();
                         });
                       },
-                    );
-                  },
-                  itemCount: max(1, _pomodoros[rowIndex].length),
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
+                      icon: Icon(Icons.remove),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _pomodoros[rowIndex].add(false);
+                        });
+                      },
+                      icon: Icon(Icons.add),
+                    ),
+                  ],
                 ),
-              ),
-              Row(
-                children: <Widget>[
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        if (_pomodoros[rowIndex].length > 1) _pomodoros[rowIndex].removeLast();
-                      });
-                    },
-                    icon: Icon(Icons.remove),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _pomodoros[rowIndex].add(false);
-                      });
-                    },
-                    icon: Icon(Icons.add),
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
@@ -156,6 +168,7 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Table(
@@ -244,10 +257,8 @@ class _HomePageState extends State<HomePage> {
           ),
           Expanded(
             flex: 4,
-            child: Table(
-              columnWidths: {0: FlexColumnWidth(), 1: FlexColumnWidth()},
-              defaultVerticalAlignment: TableCellVerticalAlignment.top,
-              children: <TableRow>[
+            child: Column(
+              children: <Row>[
                 getHeader(),
                 getPomodoroRow(0),
               ],
