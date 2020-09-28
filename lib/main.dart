@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -34,8 +36,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var _pomodoros = [
-    0,
+  List<List<bool>> _pomodoros = [
+    [false]
   ];
 
   @override
@@ -53,10 +55,7 @@ class _HomePageState extends State<HomePage> {
           child: Text(
             "Task".toUpperCase(),
             textAlign: TextAlign.center,
-            style: Theme
-                .of(context)
-                .textTheme
-                .headline6,
+            style: Theme.of(context).textTheme.headline6,
           ),
         ),
         Container(
@@ -66,10 +65,7 @@ class _HomePageState extends State<HomePage> {
           child: Text(
             "Pomodoros Allocated".toUpperCase(),
             textAlign: TextAlign.center,
-            style: Theme
-                .of(context)
-                .textTheme
-                .headline6,
+            style: Theme.of(context).textTheme.headline6,
           ),
         ),
       ],
@@ -80,6 +76,7 @@ class _HomePageState extends State<HomePage> {
     return new TableRow(
       children: <Widget>[
         Container(
+          height: 50,
           padding: EdgeInsets.symmetric(horizontal: 5),
           margin: EdgeInsets.all(2),
           decoration: BoxDecoration(color: Colors.purple.shade50),
@@ -88,25 +85,35 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         Container(
+          height: 50,
           padding: EdgeInsets.symmetric(horizontal: 5),
           margin: EdgeInsets.all(2),
           decoration: BoxDecoration(color: Colors.purple.shade50),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               Container(
-                constraints: BoxConstraints.tightFor(width: 200, height: 50),
+                constraints: BoxConstraints.tightForFinite(width: double.infinity, height: 50),
                 child: ListView.builder(
                   itemBuilder: (context, index) {
                     return Checkbox(
-                      value: false,
-                      onChanged: (bool value) {},
+                      value: _pomodoros[rowIndex][index],
+                      onChanged: (bool value) {
+                        setState(() {
+                          _pomodoros[rowIndex][index] = value;
+                          _pomodoros[rowIndex].sort((a, b) => a == b
+                              ? 0
+                              : a
+                                  ? -1
+                                  : 1);
+                        });
+                      },
                     );
                   },
-                  itemCount: _pomodoros[rowIndex],
+                  itemCount: max(1, _pomodoros[rowIndex].length),
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
-                  itemExtent: 50,
                 ),
               ),
               Row(
@@ -114,7 +121,7 @@ class _HomePageState extends State<HomePage> {
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        if (_pomodoros[rowIndex] > 0) _pomodoros[rowIndex]--;
+                        if (_pomodoros[rowIndex].length > 1) _pomodoros[rowIndex].removeLast();
                       });
                     },
                     icon: Icon(Icons.remove),
@@ -122,7 +129,7 @@ class _HomePageState extends State<HomePage> {
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        _pomodoros[rowIndex]++;
+                        _pomodoros[rowIndex].add(false);
                       });
                     },
                     icon: Icon(Icons.add),
@@ -238,7 +245,7 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             flex: 4,
             child: Table(
-              defaultColumnWidth: IntrinsicColumnWidth(),
+              columnWidths: {0: FlexColumnWidth(), 1: FlexColumnWidth()},
               defaultVerticalAlignment: TableCellVerticalAlignment.top,
               children: <TableRow>[
                 getHeader(),
@@ -247,12 +254,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(
-          Icons.add,
-        ),
       ),
     );
   }
