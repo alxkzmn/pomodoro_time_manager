@@ -39,6 +39,7 @@ class _HomePageState extends State<HomePage> {
   List<List<bool>> _pomodoros = [
     [false]
   ];
+  List<String> _tasks = [""];
 
   @override
   void initState() {
@@ -53,7 +54,7 @@ class _HomePageState extends State<HomePage> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 5),
             margin: EdgeInsets.all(2),
-            decoration: BoxDecoration(color: Colors.blue.shade50),
+            decoration: BoxDecoration(color: Colors.lightBlue.shade50),
             child: Text(
               "Task".toUpperCase(),
               textAlign: TextAlign.center,
@@ -66,7 +67,7 @@ class _HomePageState extends State<HomePage> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 5),
             margin: EdgeInsets.all(2),
-            decoration: BoxDecoration(color: Colors.blue.shade50),
+            decoration: BoxDecoration(color: Colors.lightBlue.shade50),
             child: Text(
               "Pomodoros Allocated".toUpperCase(),
               textAlign: TextAlign.center,
@@ -89,7 +90,7 @@ class _HomePageState extends State<HomePage> {
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(color: Colors.purple.shade50),
             child: TextField(
-              decoration: InputDecoration(border: InputBorder.none),
+              decoration: InputDecoration(border: InputBorder.none, hintText: "ENTER TASK NAME"),
             ),
           ),
         ),
@@ -180,7 +181,7 @@ class _HomePageState extends State<HomePage> {
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 5),
                           margin: EdgeInsets.all(2),
-                          decoration: BoxDecoration(color: Colors.blue.shade50),
+                          decoration: BoxDecoration(color: Colors.lightBlue.shade50),
                           child: Text(
                             "NAME",
                             style: Theme.of(context).textTheme.headline6,
@@ -194,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                           decoration: BoxDecoration(color: Colors.purple.shade50),
                           child: TextField(
                             textAlign: TextAlign.center,
-                            decoration: InputDecoration(border: InputBorder.none),
+                            decoration: InputDecoration(border: InputBorder.none, hintText: "ENTER YOUR NAME"),
                           ),
                         ),
                       ],
@@ -204,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 5),
                           margin: EdgeInsets.all(2),
-                          decoration: BoxDecoration(color: Colors.blue.shade50),
+                          decoration: BoxDecoration(color: Colors.lightBlue.shade50),
                           child: Text(
                             "DATE",
                             style: Theme.of(context).textTheme.headline6,
@@ -216,7 +217,10 @@ class _HomePageState extends State<HomePage> {
                           padding: EdgeInsets.symmetric(horizontal: 5),
                           margin: EdgeInsets.all(2),
                           decoration: BoxDecoration(color: Colors.purple.shade50),
-                          child: Text(dateFormat.format(DateTime.now())),
+                          child: Text(
+                            dateFormat.format(DateTime.now()),
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
                           alignment: Alignment.center,
                           height: 50,
                         ),
@@ -227,7 +231,7 @@ class _HomePageState extends State<HomePage> {
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 5),
                           margin: EdgeInsets.all(2),
-                          decoration: BoxDecoration(color: Colors.blue.shade50),
+                          decoration: BoxDecoration(color: Colors.lightBlue.shade50),
                           child: Text(
                             "LOCATION",
                             style: Theme.of(context).textTheme.headline6,
@@ -241,7 +245,7 @@ class _HomePageState extends State<HomePage> {
                           decoration: BoxDecoration(color: Colors.purple.shade50),
                           child: TextField(
                             textAlign: TextAlign.center,
-                            decoration: InputDecoration(border: InputBorder.none),
+                            decoration: InputDecoration(border: InputBorder.none, hintText: "ENTER YOUR LOCATION"),
                           ),
                         ),
                       ],
@@ -258,9 +262,41 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             flex: 4,
             child: Column(
-              children: <Row>[
+              children: [
                 getHeader(),
-                getPomodoroRow(0),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _tasks.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == _tasks.length) {
+                      return Container(
+                        height: 50,
+                        margin: EdgeInsets.all(2),
+                        //decoration: BoxDecoration(),
+                        child: Material(
+                          color: Colors.blue.shade50,
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                _tasks.add("");
+                                _pomodoros.add([false]);
+                              });
+                            },
+                            child: Center(
+                              child: Icon(
+                                Icons.add,
+                                size: 36,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return getPomodoroRow(index);
+                    }
+                  },
+                ),
               ],
             ),
           ),
