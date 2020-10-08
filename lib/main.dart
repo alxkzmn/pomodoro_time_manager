@@ -4,8 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'gauge_chart.dart';
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -14,11 +12,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pomodoro Time Manager',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        primarySwatch: Colors.lightBlue,
+        primaryColor: Colors.lightBlue.shade50,
+        appBarTheme: AppBarTheme(
+          elevation: 1,
+        ),
         textTheme: Theme.of(context).textTheme.apply(
               fontFamily: 'Open Sans',
-              bodyColor: Colors.grey,
-              displayColor: Colors.grey,
+              bodyColor: Colors.black54,
+              displayColor: Colors.black54,
+              decorationColor: Colors.black54,
             ),
       ),
       home: HomePage(title: 'Pomodoro Time Manager'),
@@ -55,10 +58,13 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.symmetric(horizontal: 5),
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(color: Colors.lightBlue.shade50),
-            child: Text(
-              "Task".toUpperCase(),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline6,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Task".toUpperCase(),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline6,
+              ),
             ),
           ),
         ),
@@ -68,10 +74,13 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.symmetric(horizontal: 5),
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(color: Colors.lightBlue.shade50),
-            child: Text(
-              "Pomodoros Allocated".toUpperCase(),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline6,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Pomodoros Allocated".toUpperCase(),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline6,
+              ),
             ),
           ),
         ),
@@ -252,10 +261,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                Expanded(
+                /* Expanded(
                   flex: 1,
                   child: GaugeChart.withSampleData(),
-                ),
+                ),*/
               ],
             ),
           ),
@@ -286,7 +295,7 @@ class _HomePageState extends State<HomePage> {
                               child: Icon(
                                 Icons.add,
                                 size: 36,
-                                color: Colors.white,
+                                color: Colors.black45,
                               ),
                             ),
                           ),
