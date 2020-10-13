@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
 
@@ -44,9 +45,17 @@ class _HomePageState extends State<HomePage> {
   ];
   List<String> _tasks = [""];
 
+  static const String NAME = "NAME";
+  static const String LOCATION = "LOCATION";
+
+  final TextEditingController _nameTextController = TextEditingController();
+  final TextEditingController _locationTextController = TextEditingController();
+
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    _nameTextController.dispose();
+    _locationTextController.dispose();
+    super.dispose();
   }
 
   Row getHeader() {
@@ -202,11 +211,27 @@ class _HomePageState extends State<HomePage> {
                           padding: EdgeInsets.symmetric(horizontal: 5),
                           margin: EdgeInsets.all(2),
                           decoration: BoxDecoration(color: Colors.purple.shade50),
-                          child: TextField(
-                            textAlign: TextAlign.center,
-                            decoration: InputDecoration(border: InputBorder.none, hintText: "ENTER YOUR NAME"),
+                          child: FutureBuilder(
+                            future: SharedPreferences.getInstance().then(
+                              (prefs) {
+                                return prefs.getString(NAME);
+                              },
+                            ),
+                            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                              _nameTextController.text = snapshot.data;
+                              return TextField(
+                                controller: _nameTextController,
+                                textAlign: TextAlign.center,
+                                decoration: InputDecoration(border: InputBorder.none, hintText: "ENTER YOUR NAME"),
+                                onChanged: (text) {
+                                  SharedPreferences.getInstance().then((prefs) {
+                                    prefs.setString(NAME, text);
+                                  });
+                                },
+                              );
+                            },
                           ),
-                        ),
+                        )
                       ],
                     ),
                     TableRow(
@@ -252,9 +277,25 @@ class _HomePageState extends State<HomePage> {
                           padding: EdgeInsets.symmetric(horizontal: 5),
                           margin: EdgeInsets.all(2),
                           decoration: BoxDecoration(color: Colors.purple.shade50),
-                          child: TextField(
-                            textAlign: TextAlign.center,
-                            decoration: InputDecoration(border: InputBorder.none, hintText: "ENTER YOUR LOCATION"),
+                          child: FutureBuilder(
+                            future: SharedPreferences.getInstance().then(
+                              (prefs) {
+                                return prefs.getString(LOCATION);
+                              },
+                            ),
+                            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                              _locationTextController.text = snapshot.data;
+                              return TextField(
+                                controller: _locationTextController,
+                                textAlign: TextAlign.center,
+                                decoration: InputDecoration(border: InputBorder.none, hintText: "ENTER YOUR LOCATION"),
+                                onChanged: (text) {
+                                  SharedPreferences.getInstance().then((prefs) {
+                                    prefs.setString(LOCATION, text);
+                                  });
+                                },
+                              );
+                            },
                           ),
                         ),
                       ],
