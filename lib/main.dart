@@ -47,6 +47,7 @@ class _HomePageState extends State<HomePage> {
 
   static const String NAME = "NAME";
   static const String LOCATION = "LOCATION";
+  static const String TASKS = "TASKS";
 
   final TextEditingController _nameTextController = TextEditingController();
   final TextEditingController _locationTextController = TextEditingController();
@@ -97,7 +98,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Row getPomodoroRow(int rowIndex) {
+  Row getPomodoroRow(int rowIndex, List<String> tasks) {
+    var taskName = tasks.length > rowIndex ? tasks[rowIndex] : "";
+    var _textController = TextEditingController(text: taskName);
     return new Row(
       children: <Widget>[
         Expanded(
@@ -108,7 +111,14 @@ class _HomePageState extends State<HomePage> {
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(color: Colors.purple.shade50),
             child: TextField(
+              controller: _textController,
               decoration: InputDecoration(border: InputBorder.none, hintText: "ENTER TASK NAME"),
+              onChanged: (text) {
+                _tasks[rowIndex] = text;
+                SharedPreferences.getInstance().then((prefs) {
+                  prefs.setStringList(TASKS, _tasks);
+                });
+              },
             ),
           ),
         ),
@@ -314,38 +324,54 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               children: [
                 getHeader(),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _tasks.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index == _tasks.length) {
-                      return Container(
-                        height: 50,
-                        margin: EdgeInsets.all(2),
-                        //decoration: BoxDecoration(),
-                        child: Material(
-                          color: Colors.blue.shade50,
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                _tasks.add("");
-                                _pomodoros.add([false]);
-                              });
-                            },
-                            child: Center(
-                              child: Icon(
-                                Icons.add,
-                                size: 36,
-                                color: Colors.black45,
+                FutureBuilder(
+                  future: SharedPreferences.getInstance().then(
+                        (prefs) {
+                      return prefs.getStringList(TASKS);
+                    },
+                  ),
+                  builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+                    var tasks = snapshot.data ?? _tasks;
+                    while (_pomodoros.length < tasks.length){
+                      _pomodoros.add([false]);
+                    }
+                    return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: tasks.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == tasks.length) {
+                        return Container(
+                          height: 50,
+                          margin: EdgeInsets.all(2),
+                          //decoration: BoxDecoration(),
+                          child: Material(
+                            color: Colors.blue.shade50,
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _tasks.add("");
+                                  _pomodoros.add([false]);
+                                  SharedPreferences.getInstance().then((prefs) {
+                                    prefs.setStringList(TASKS, _tasks);
+                                  });
+                                });
+                              },
+                              child: Center(
+                                child: Icon(
+                                  Icons.add,
+                                  size: 36,
+                                  color: Colors.black45,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    } else {
-                      return getPomodoroRow(index);
-                    }
-                  },
+                        );
+                      } else {
+                        return getPomodoroRow(index, tasks);
+                      }
+                    },
+                  ); },
+
                 ),
               ],
             ),
