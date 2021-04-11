@@ -137,8 +137,13 @@ class _HomePageState extends State<HomePage> {
                     IconButton(
                       onPressed: () {
                         setState(() {
-                          if (_pomodoros[rowIndex].length > 1)
+                          if (_pomodoros[rowIndex].length > 1) {
                             _pomodoros[rowIndex].removeLast();
+                          } else if (_pomodoros.length > 1) {
+                            _pomodoros.removeAt(rowIndex);
+                            _tasks.removeAt(rowIndex);
+                            saveTasks();
+                          }
                         });
                       },
                       icon: Icon(Icons.remove),
