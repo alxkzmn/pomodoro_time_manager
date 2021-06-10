@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timemanager/main.dart';
 
 class HomePage extends StatefulWidget {
+   static const CELL_HEIGHT = 50.0;
+
   HomePage({Key? key, this.title}) : super(key: key);
 
   final String? title;
@@ -36,7 +38,7 @@ class _HomePageState extends State<HomePage> {
         Expanded(
           flex: 1,
           child: Container(
-            height: 50,
+            height: HomePage.CELL_HEIGHT,
             padding: EdgeInsets.symmetric(horizontal: 5),
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(color: Colors.lightBlue.shade50),
@@ -53,7 +55,7 @@ class _HomePageState extends State<HomePage> {
         Expanded(
           flex: 1,
           child: Container(
-            height: 50,
+            height: HomePage.CELL_HEIGHT,
             padding: EdgeInsets.symmetric(horizontal: 5),
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(color: Colors.lightBlue.shade50),
@@ -106,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                             style: Theme.of(context).textTheme.headline6,
                           ),
                           alignment: Alignment.center,
-                          height: 50,
+                          height: HomePage.CELL_HEIGHT,
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 5),
@@ -149,7 +151,7 @@ class _HomePageState extends State<HomePage> {
                             style: Theme.of(context).textTheme.headline6,
                           ),
                           alignment: Alignment.center,
-                          height: 50,
+                          height: HomePage.CELL_HEIGHT,
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 5),
@@ -161,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                             style: Theme.of(context).textTheme.headline6,
                           ),
                           alignment: Alignment.center,
-                          height: 50,
+                          height: HomePage.CELL_HEIGHT,
                         ),
                       ],
                     ),
@@ -177,7 +179,7 @@ class _HomePageState extends State<HomePage> {
                             style: Theme.of(context).textTheme.headline6,
                           ),
                           alignment: Alignment.center,
-                          height: 50,
+                          height: HomePage.CELL_HEIGHT,
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 5),
@@ -219,7 +221,7 @@ class _HomePageState extends State<HomePage> {
                             style: Theme.of(context).textTheme.headline6,
                           ),
                           alignment: Alignment.center,
-                          height: 50,
+                          height: HomePage.CELL_HEIGHT,
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 5),
@@ -243,10 +245,10 @@ class _HomePageState extends State<HomePage> {
                             style: Theme.of(context).textTheme.headline6,
                           ),
                           alignment: Alignment.center,
-                          height: 50,
+                          height: HomePage.CELL_HEIGHT,
                         ),
                         Container(
-                          height: 50,
+                          height: HomePage.CELL_HEIGHT,
                           padding: EdgeInsets.symmetric(horizontal: 5),
                           margin: EdgeInsets.all(2),
                           decoration:
@@ -357,7 +359,7 @@ class _TaskTableState extends State<TaskTable> {
       itemBuilder: (context, index) {
         if (index == _tasks.length) {
           return Container(
-            height: 50,
+            height: HomePage.CELL_HEIGHT,
             margin: EdgeInsets.all(2),
             child: Material(
               color: Colors.blue.shade50,
@@ -397,7 +399,7 @@ class _TaskTableState extends State<TaskTable> {
         Expanded(
           flex: 1,
           child: Container(
-            height: 50,
+            height: HomePage.CELL_HEIGHT,
             padding: EdgeInsets.symmetric(horizontal: 5),
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(color: Colors.purple.shade50),
@@ -416,7 +418,7 @@ class _TaskTableState extends State<TaskTable> {
         Expanded(
           flex: 1,
           child: Container(
-            height: 50,
+            height: HomePage.CELL_HEIGHT,
             padding: EdgeInsets.symmetric(horizontal: 5),
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(color: Colors.purple.shade50),
@@ -426,7 +428,7 @@ class _TaskTableState extends State<TaskTable> {
               children: <Widget>[
                 Container(
                   constraints: BoxConstraints.tightForFinite(
-                      width: double.infinity, height: 50),
+                      width: double.infinity, height: HomePage.CELL_HEIGHT),
                   child: ListView.builder(
                     itemBuilder: (context, index) {
                       return Checkbox(
