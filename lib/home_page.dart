@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timemanager/main.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key, this.title}) : super(key: key);
@@ -15,15 +17,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<List<bool>> _pomodoros = [
-    [false]
-  ];
-  List<String> _tasks = [""];
-
   static const String NAME = "NAME";
   static const String LOCATION = "LOCATION";
-  static const String TASKS = "TASKS";
-  static const String POMOS = "POMOS";
 
   final TextEditingController _nameTextController = TextEditingController();
   final TextEditingController _locationTextController = TextEditingController();
@@ -41,6 +36,7 @@ class _HomePageState extends State<HomePage> {
         Expanded(
           flex: 1,
           child: Container(
+            height: 50,
             padding: EdgeInsets.symmetric(horizontal: 5),
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(color: Colors.lightBlue.shade50),
@@ -57,6 +53,7 @@ class _HomePageState extends State<HomePage> {
         Expanded(
           flex: 1,
           child: Container(
+            height: 50,
             padding: EdgeInsets.symmetric(horizontal: 5),
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(color: Colors.lightBlue.shade50),
@@ -67,98 +64,6 @@ class _HomePageState extends State<HomePage> {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline6,
               ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Row getPomodoroRow(int rowIndex, List<String> tasks) {
-    var taskName = tasks.length > rowIndex ? tasks[rowIndex] : "";
-    var _textController = TextEditingController(text: taskName);
-    return new Row(
-      children: <Widget>[
-        Expanded(
-          flex: 1,
-          child: Container(
-            height: 50,
-            padding: EdgeInsets.symmetric(horizontal: 5),
-            margin: EdgeInsets.all(2),
-            decoration: BoxDecoration(color: Colors.purple.shade50),
-            child: TextField(
-              controller: _textController,
-              decoration: InputDecoration(
-                  border: InputBorder.none, hintText: "ENTER TASK NAME"),
-              onChanged: (text) {
-                _tasks[rowIndex] = text;
-                saveTasks();
-              },
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Container(
-            height: 50,
-            padding: EdgeInsets.symmetric(horizontal: 5),
-            margin: EdgeInsets.all(2),
-            decoration: BoxDecoration(color: Colors.purple.shade50),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Container(
-                  constraints: BoxConstraints.tightForFinite(
-                      width: double.infinity, height: 50),
-                  child: ListView.builder(
-                    itemBuilder: (context, index) {
-                      return Checkbox(
-                        value: _pomodoros[rowIndex][index],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            _pomodoros[rowIndex][index] = value ?? false;
-                            _pomodoros[rowIndex].sort((a, b) => a == b
-                                ? 0
-                                : a
-                                    ? -1
-                                    : 1);
-                          });
-                        },
-                      );
-                    },
-                    itemCount: max(1, _pomodoros[rowIndex].length),
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                  ),
-                ),
-                Row(
-                  children: <Widget>[
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          if (_pomodoros[rowIndex].length > 1) {
-                            _pomodoros[rowIndex].removeLast();
-                          } else if (_pomodoros.length > 1) {
-                            _pomodoros.removeAt(rowIndex);
-                            _tasks.removeAt(rowIndex);
-                            saveTasks();
-                          }
-                        });
-                      },
-                      icon: Icon(Icons.remove),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _pomodoros[rowIndex].add(false);
-                        });
-                      },
-                      icon: Icon(Icons.add),
-                    ),
-                  ],
-                ),
-              ],
             ),
           ),
         ),
@@ -304,6 +209,63 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     ),
+                    TableRow(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          margin: EdgeInsets.all(2),
+                          child: Text(
+                            "",
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                          alignment: Alignment.center,
+                          height: 50,
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          margin: EdgeInsets.all(2),
+                          child: Text(
+                            "",
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                        ),
+                      ],
+                    ),
+                    TableRow(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          margin: EdgeInsets.all(2),
+                          decoration:
+                              BoxDecoration(color: Colors.lightBlue.shade50),
+                          child: Text(
+                            "TOTAL",
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                          alignment: Alignment.center,
+                          height: 50,
+                        ),
+                        Container(
+                          height: 50,
+                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          margin: EdgeInsets.all(2),
+                          decoration:
+                              BoxDecoration(color: Colors.purple.shade50),
+                          child: Center(
+                            child: Text(
+                              Provider.of<Pomos>(context)
+                                  .pomodoros
+                                  .fold<int>(
+                                      0,
+                                      (previousValue, element) =>
+                                          previousValue + element.length)
+                                  .toString(),
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
                 /* Expanded(
@@ -326,47 +288,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                   builder: (BuildContext context,
                       AsyncSnapshot<SharedPreferences> snapshot) {
-                    var tasks = snapshot.data?.getStringList(TASKS) ?? _tasks;
-                    int index = 0;
-                    while (_pomodoros.length < tasks.length) {
-                      _pomodoros.add([false]);
-                      _tasks.add(tasks[index]);
-                      index++;
-                    }
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _tasks.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index == _tasks.length) {
-                          return Container(
-                            height: 50,
-                            margin: EdgeInsets.all(2),
-                            //decoration: BoxDecoration(),
-                            child: Material(
-                              color: Colors.blue.shade50,
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _tasks.add("");
-                                    _pomodoros.add([false]);
-                                    saveTasks();
-                                  });
-                                },
-                                child: Center(
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 36,
-                                    color: Colors.black45,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        } else {
-                          return getPomodoroRow(index, _tasks);
-                        }
-                      },
-                    );
+                    var tasks = snapshot.data?.getStringList(TaskTable.TASKS);
+                    return TaskTable(tasks ?? []);
                   },
                 ),
               ],
@@ -388,10 +311,176 @@ class _HomePageState extends State<HomePage> {
       prefs.setString(LOCATION, text);
     });
   }
+}
+
+class TaskTable extends StatefulWidget {
+  static const String TASKS = "TASKS";
+
+  final List<String> tasks;
+
+  TaskTable(this.tasks);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _TaskTableState(tasks);
+  }
+}
+
+class _TaskTableState extends State<TaskTable> {
+  final List<String> _tasks;
+
+  late final List<FocusNode> _focusNodes;
+
+  _TaskTableState(this._tasks);
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNodes =
+        List<FocusNode>.generate(_tasks.length, (int index) => FocusNode());
+    Provider.of<Pomos>(context, listen: false).init(_tasks);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _focusNodes.forEach((element) {
+      element.dispose();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: _tasks.length + 1,
+      itemBuilder: (context, index) {
+        if (index == _tasks.length) {
+          return Container(
+            height: 50,
+            margin: EdgeInsets.all(2),
+            child: Material(
+              color: Colors.blue.shade50,
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    _tasks.add("");
+                    _focusNodes.add(FocusNode());
+                    Provider.of<Pomos>(context, listen: false).appendNewLine();
+                    saveTasks();
+                  });
+                },
+                child: Center(
+                  child: Icon(
+                    Icons.add,
+                    size: 36,
+                    color: Colors.black45,
+                  ),
+                ),
+              ),
+            ),
+          );
+        } else {
+          return getPomodoroRow(index, _tasks);
+        }
+      },
+    );
+  }
+
+  Row getPomodoroRow(int rowIndex, List<String> tasks) {
+    var taskName = tasks.length > rowIndex ? tasks[rowIndex] : "";
+    var _textController = TextEditingController(text: taskName);
+    var pomos = Provider.of<Pomos>(context);
+    var pomodoros = pomos.pomodoros;
+    return new Row(
+      children: <Widget>[
+        Expanded(
+          flex: 1,
+          child: Container(
+            height: 50,
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            margin: EdgeInsets.all(2),
+            decoration: BoxDecoration(color: Colors.purple.shade50),
+            child: TextField(
+              focusNode: _focusNodes[rowIndex],
+              controller: _textController,
+              decoration: InputDecoration(
+                  border: InputBorder.none, hintText: "ENTER TASK NAME"),
+              onChanged: (text) {
+                _tasks[rowIndex] = text;
+                saveTasks();
+              },
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: Container(
+            height: 50,
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            margin: EdgeInsets.all(2),
+            decoration: BoxDecoration(color: Colors.purple.shade50),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Container(
+                  constraints: BoxConstraints.tightForFinite(
+                      width: double.infinity, height: 50),
+                  child: ListView.builder(
+                    itemBuilder: (context, index) {
+                      return Checkbox(
+                        value: pomodoros[rowIndex][index],
+                        onChanged: (bool? value) {
+                          setState(() {
+                            pomos.set(
+                                value: value, rowIndex: rowIndex, index: index);
+                          });
+                        },
+                      );
+                    },
+                    itemCount: max(1, pomodoros[rowIndex].length),
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                  ),
+                ),
+                Row(
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () {
+                        if (pomodoros[rowIndex].length > 1) {
+                          pomos.removeLast(rowIndex);
+                        } else if (pomodoros.length > 1) {
+                          pomos.removeAt(rowIndex);
+                          setState(() {
+                            _tasks.removeAt(rowIndex);
+                            saveTasks();
+                          });
+                        }
+                      },
+                      icon: Icon(Icons.remove),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          pomos.appendAtEndOf(rowIndex);
+                        });
+                      },
+                      icon: Icon(Icons.add),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   Future<dynamic> saveTasks() {
     return SharedPreferences.getInstance().then((prefs) {
-      prefs.setStringList(TASKS, _tasks);
+      prefs.setStringList(TaskTable.TASKS, _tasks);
     });
   }
 }
