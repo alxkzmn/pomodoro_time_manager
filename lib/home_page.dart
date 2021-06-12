@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timemanager/main.dart';
 
 class HomePage extends StatefulWidget {
-   static const CELL_HEIGHT = 50.0;
+  static const CELL_HEIGHT = 50.0;
 
   HomePage({Key? key, this.title}) : super(key: key);
 
@@ -21,6 +21,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   static const String NAME = "NAME";
   static const String LOCATION = "LOCATION";
+  var dateFormat = new DateFormat('dd MMM yyyy');
 
   final TextEditingController _nameTextController = TextEditingController();
   final TextEditingController _locationTextController = TextEditingController();
@@ -30,6 +31,219 @@ class _HomePageState extends State<HomePage> {
     _nameTextController.dispose();
     _locationTextController.dispose();
     super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title ?? ""),
+      ),
+      body: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Table(
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    columnWidths: {
+                      0: FlexColumnWidth(1),
+                      1: FlexColumnWidth(1)
+                    },
+                    children: <TableRow>[
+                      TableRow(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            margin: EdgeInsets.all(2),
+                            decoration:
+                                BoxDecoration(color: Colors.lightBlue.shade50),
+                            child: Text(
+                              "NAME",
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                            alignment: Alignment.center,
+                            height: HomePage.CELL_HEIGHT,
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            margin: EdgeInsets.all(2),
+                            decoration:
+                                BoxDecoration(color: Colors.purple.shade50),
+                            child: FutureBuilder(
+                              future: SharedPreferences.getInstance().then(
+                                (prefs) {
+                                  return prefs.getString(NAME);
+                                },
+                              ),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<String?> snapshot) {
+                                _nameTextController.text = snapshot.data ?? "";
+                                return TextField(
+                                  controller: _nameTextController,
+                                  textAlign: TextAlign.center,
+                                  decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: "ENTER YOUR NAME"),
+                                  onChanged: (text) {
+                                    saveName(text);
+                                  },
+                                );
+                              },
+                            ),
+                          )
+                        ],
+                      ),
+                      TableRow(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            margin: EdgeInsets.all(2),
+                            decoration:
+                                BoxDecoration(color: Colors.lightBlue.shade50),
+                            child: Text(
+                              "DATE",
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                            alignment: Alignment.center,
+                            height: HomePage.CELL_HEIGHT,
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            margin: EdgeInsets.all(2),
+                            decoration:
+                                BoxDecoration(color: Colors.purple.shade50),
+                            child: Text(
+                              dateFormat.format(DateTime.now()),
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                            alignment: Alignment.center,
+                            height: HomePage.CELL_HEIGHT,
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            margin: EdgeInsets.all(2),
+                            decoration:
+                                BoxDecoration(color: Colors.lightBlue.shade50),
+                            child: Text(
+                              "LOCATION",
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                            alignment: Alignment.center,
+                            height: HomePage.CELL_HEIGHT,
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            margin: EdgeInsets.all(2),
+                            decoration:
+                                BoxDecoration(color: Colors.purple.shade50),
+                            child: FutureBuilder(
+                              future: SharedPreferences.getInstance().then(
+                                (prefs) {
+                                  return prefs.getString(LOCATION);
+                                },
+                              ),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<String?> snapshot) {
+                                _locationTextController.text =
+                                    snapshot.data ?? "";
+                                return TextField(
+                                  controller: _locationTextController,
+                                  textAlign: TextAlign.center,
+                                  decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: "ENTER YOUR LOCATION"),
+                                  onChanged: (text) {
+                                    saveLocation(text);
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            margin: EdgeInsets.all(2),
+                            child: Text(
+                              "",
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                            alignment: Alignment.center,
+                            height: HomePage.CELL_HEIGHT,
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            margin: EdgeInsets.all(2),
+                            child: Text(
+                              "",
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            margin: EdgeInsets.all(2),
+                            decoration:
+                                BoxDecoration(color: Colors.lightBlue.shade50),
+                            child: Text(
+                              "TOTAL",
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                            alignment: Alignment.center,
+                            height: HomePage.CELL_HEIGHT,
+                          ),
+                          Container(
+                            height: HomePage.CELL_HEIGHT,
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            margin: EdgeInsets.all(2),
+                            decoration:
+                                BoxDecoration(color: Colors.purple.shade50),
+                            child: Center(
+                              child: Text(
+                                Provider.of<Pomos>(context)
+                                    .pomodoros
+                                    .fold<int>(
+                                        0,
+                                        (previousValue, element) =>
+                                            previousValue + element.length)
+                                    .toString(),
+                                style: Theme.of(context).textTheme.headline6,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  /* Expanded(
+                  flex: 1,
+                  child: GaugeChart.withSampleData(),
+                ),*/
+                ],
+              ),
+              flex: 2),
+          Expanded(
+            flex: 3,
+            child: Column(
+              children: [getHeader(), TaskTable()],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Row getHeader() {
@@ -73,235 +287,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    var dateFormat = new DateFormat('dd MMM yyyy');
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title ?? ""),
-      ),
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Table(
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  columnWidths: {
-                    0: IntrinsicColumnWidth(),
-                    1: FlexColumnWidth(1)
-                  },
-                  children: <TableRow>[
-                    TableRow(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          margin: EdgeInsets.all(2),
-                          decoration:
-                              BoxDecoration(color: Colors.lightBlue.shade50),
-                          child: Text(
-                            "NAME",
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          alignment: Alignment.center,
-                          height: HomePage.CELL_HEIGHT,
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          margin: EdgeInsets.all(2),
-                          decoration:
-                              BoxDecoration(color: Colors.purple.shade50),
-                          child: FutureBuilder(
-                            future: SharedPreferences.getInstance().then(
-                              (prefs) {
-                                return prefs.getString(NAME);
-                              },
-                            ),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<String?> snapshot) {
-                              _nameTextController.text = snapshot.data ?? "";
-                              return TextField(
-                                controller: _nameTextController,
-                                textAlign: TextAlign.center,
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: "ENTER YOUR NAME"),
-                                onChanged: (text) {
-                                  saveName(text);
-                                },
-                              );
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                    TableRow(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          margin: EdgeInsets.all(2),
-                          decoration:
-                              BoxDecoration(color: Colors.lightBlue.shade50),
-                          child: Text(
-                            "DATE",
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          alignment: Alignment.center,
-                          height: HomePage.CELL_HEIGHT,
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          margin: EdgeInsets.all(2),
-                          decoration:
-                              BoxDecoration(color: Colors.purple.shade50),
-                          child: Text(
-                            dateFormat.format(DateTime.now()),
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          alignment: Alignment.center,
-                          height: HomePage.CELL_HEIGHT,
-                        ),
-                      ],
-                    ),
-                    TableRow(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          margin: EdgeInsets.all(2),
-                          decoration:
-                              BoxDecoration(color: Colors.lightBlue.shade50),
-                          child: Text(
-                            "LOCATION",
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          alignment: Alignment.center,
-                          height: HomePage.CELL_HEIGHT,
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          margin: EdgeInsets.all(2),
-                          decoration:
-                              BoxDecoration(color: Colors.purple.shade50),
-                          child: FutureBuilder(
-                            future: SharedPreferences.getInstance().then(
-                              (prefs) {
-                                return prefs.getString(LOCATION);
-                              },
-                            ),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<String?> snapshot) {
-                              _locationTextController.text =
-                                  snapshot.data ?? "";
-                              return TextField(
-                                controller: _locationTextController,
-                                textAlign: TextAlign.center,
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: "ENTER YOUR LOCATION"),
-                                onChanged: (text) {
-                                  saveLocation(text);
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    TableRow(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          margin: EdgeInsets.all(2),
-                          child: Text(
-                            "",
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          alignment: Alignment.center,
-                          height: HomePage.CELL_HEIGHT,
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          margin: EdgeInsets.all(2),
-                          child: Text(
-                            "",
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                        ),
-                      ],
-                    ),
-                    TableRow(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          margin: EdgeInsets.all(2),
-                          decoration:
-                              BoxDecoration(color: Colors.lightBlue.shade50),
-                          child: Text(
-                            "TOTAL",
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          alignment: Alignment.center,
-                          height: HomePage.CELL_HEIGHT,
-                        ),
-                        Container(
-                          height: HomePage.CELL_HEIGHT,
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          margin: EdgeInsets.all(2),
-                          decoration:
-                              BoxDecoration(color: Colors.purple.shade50),
-                          child: Center(
-                            child: Text(
-                              Provider.of<Pomos>(context)
-                                  .pomodoros
-                                  .fold<int>(
-                                      0,
-                                      (previousValue, element) =>
-                                          previousValue + element.length)
-                                  .toString(),
-                              style: Theme.of(context).textTheme.headline6,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                /* Expanded(
-                  flex: 1,
-                  child: GaugeChart.withSampleData(),
-                ),*/
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 4,
-            child: Column(
-              children: [
-                getHeader(),
-                FutureBuilder(
-                  future: SharedPreferences.getInstance().then(
-                    (prefs) {
-                      return prefs;
-                    },
-                  ),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<SharedPreferences> snapshot) {
-                    var tasks = snapshot.data?.getStringList(TaskTable.TASKS);
-                    return TaskTable(tasks ?? []);
-                  },
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Future<dynamic> saveName(String text) {
     return SharedPreferences.getInstance().then((prefs) {
       prefs.setString(NAME, text);
@@ -318,29 +303,21 @@ class _HomePageState extends State<HomePage> {
 class TaskTable extends StatefulWidget {
   static const String TASKS = "TASKS";
 
-  final List<String> tasks;
-
-  TaskTable(this.tasks);
-
   @override
   State<StatefulWidget> createState() {
-    return _TaskTableState(tasks);
+    return _TaskTableState();
   }
 }
 
 class _TaskTableState extends State<TaskTable> {
-  final List<String> _tasks;
+  final List<FocusNode> _focusNodes = [];
 
-  late final List<FocusNode> _focusNodes;
-
-  _TaskTableState(this._tasks);
+  _TaskTableState();
 
   @override
   void initState() {
     super.initState();
-    _focusNodes =
-        List<FocusNode>.generate(_tasks.length, (int index) => FocusNode());
-    Provider.of<Pomos>(context, listen: false).init(_tasks);
+    Provider.of<Pomos>(context, listen: false).init();
   }
 
   @override
@@ -353,6 +330,16 @@ class _TaskTableState extends State<TaskTable> {
 
   @override
   Widget build(BuildContext context) {
+    var pomos = Provider.of<Pomos>(context);
+    var _tasks = pomos.tasks;
+    var oldFocusNodesLength = _focusNodes.length;
+    while (_focusNodes.length < _tasks.length) {
+      _focusNodes.add(FocusNode());
+    }
+    if ((oldFocusNodesLength != _focusNodes.length) && _focusNodes.isNotEmpty) {
+      _focusNodes.last.requestFocus();
+    }
+
     return ListView.builder(
       shrinkWrap: true,
       itemCount: _tasks.length + 1,
@@ -366,10 +353,7 @@ class _TaskTableState extends State<TaskTable> {
               child: InkWell(
                 onTap: () {
                   setState(() {
-                    _tasks.add("");
-                    _focusNodes.add(FocusNode());
                     Provider.of<Pomos>(context, listen: false).appendNewLine();
-                    saveTasks();
                   });
                 },
                 child: Center(
@@ -409,8 +393,7 @@ class _TaskTableState extends State<TaskTable> {
               decoration: InputDecoration(
                   border: InputBorder.none, hintText: "ENTER TASK NAME"),
               onChanged: (text) {
-                _tasks[rowIndex] = text;
-                saveTasks();
+                pomos.editTask(rowIndex, text);
               },
             ),
           ),
@@ -455,8 +438,8 @@ class _TaskTableState extends State<TaskTable> {
                         } else if (pomodoros.length > 1) {
                           pomos.removeAt(rowIndex);
                           setState(() {
-                            _tasks.removeAt(rowIndex);
-                            saveTasks();
+                            pomos.removeTask(rowIndex);
+                            _focusNodes.removeAt(rowIndex);
                           });
                         }
                       },
@@ -478,11 +461,5 @@ class _TaskTableState extends State<TaskTable> {
         ),
       ],
     );
-  }
-
-  Future<dynamic> saveTasks() {
-    return SharedPreferences.getInstance().then((prefs) {
-      prefs.setStringList(TaskTable.TASKS, _tasks);
-    });
   }
 }
