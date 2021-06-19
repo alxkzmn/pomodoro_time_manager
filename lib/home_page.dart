@@ -35,6 +35,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var pomodoros = Provider.of<Pomos>(context)
+                              .pomodoros;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title ?? ""),
@@ -191,41 +193,63 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
+                      labelValue(
+                          context,
+                          "TOTAL",
+                          pomodoros
+                              .fold<int>(
+                                  0,
+                                  (previousValue, element) =>
+                                      previousValue + element.length)
+                              .toString()),
+                      labelValue(
+                          context,
+                          "DONE",
+                          pomodoros
+                              .fold<int>(
+                                  0,
+                                  (previousValue, element) =>
+                                      previousValue +
+                                      (element.where((pomo) => pomo).length))
+                              .toString()),
                       TableRow(
                         children: <Widget>[
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 5),
                             margin: EdgeInsets.all(2),
                             decoration:
-                                BoxDecoration(color: Colors.lightBlue.shade50),
+                            BoxDecoration(color: Colors.lightBlue.shade50),
                             child: Text(
-                              "TOTAL",
+                              "HOURS IN DAY",
                               style: Theme.of(context).textTheme.headline6,
                             ),
                             alignment: Alignment.center,
                             height: HomePage.CELL_HEIGHT,
                           ),
                           Container(
-                            height: HomePage.CELL_HEIGHT,
                             padding: EdgeInsets.symmetric(horizontal: 5),
                             margin: EdgeInsets.all(2),
                             decoration:
-                                BoxDecoration(color: Colors.purple.shade50),
-                            child: Center(
-                              child: Text(
-                                Provider.of<Pomos>(context)
-                                    .pomodoros
-                                    .fold<int>(
-                                        0,
-                                        (previousValue, element) =>
-                                            previousValue + element.length)
-                                    .toString(),
-                                style: Theme.of(context).textTheme.headline6,
-                              ),
+                            BoxDecoration(color: Colors.purple.shade50),
+                            child: TextField(
+                              textAlign: TextAlign.center,
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "HRS YOU WANT TO WORK"),
+
                             ),
-                          ),
+                          )
                         ],
                       ),
+                      labelValue(
+                          context,
+                          "HOURS PLANNED",
+                          (pomodoros
+                              .fold<int>(
+                              0,
+                                  (previousValue, element) =>
+                              previousValue + element.length)
+                          /2).toString()),
                     ],
                   ),
                   /* Expanded(
@@ -243,6 +267,36 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+    );
+  }
+
+  TableRow labelValue(BuildContext context, String label, String value) {
+    return TableRow(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          margin: EdgeInsets.all(2),
+          decoration: BoxDecoration(color: Colors.lightBlue.shade50),
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          alignment: Alignment.center,
+          height: HomePage.CELL_HEIGHT,
+        ),
+        Container(
+          height: HomePage.CELL_HEIGHT,
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          margin: EdgeInsets.all(2),
+          decoration: BoxDecoration(color: Colors.purple.shade50),
+          child: Center(
+            child: Text(
+              value,
+              style: Theme.of(context).textTheme.headline6,
+            ),
+          ),
+        ),
+      ],
     );
   }
 

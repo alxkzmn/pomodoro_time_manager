@@ -85,6 +85,7 @@ class Pomos with ChangeNotifier {
         while (pomodoros.length < tasks.length) {
           pomodoros.add([false]);
         }
+        notifyListeners();
       },
     );
   }
@@ -94,7 +95,7 @@ class Pomos with ChangeNotifier {
     saveTasks(notify: false);
   }
 
-  void saveTasks({bool notify = false}) {
+  void saveTasks({bool notify = true}) {
     SharedPreferences.getInstance().then((prefs) {
       prefs.setStringList(TaskTable.TASKS, tasks);
     });
