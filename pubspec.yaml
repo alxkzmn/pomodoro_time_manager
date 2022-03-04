@@ -13,6 +13,7 @@ dependencies:
   shared_preferences: ^2.0.5
   provider: ^5.0.0-nullsafety.2
   intl: ^0.17.0
+  analog_clock: ^0.1.0
   cupertino_icons: ^1.0.2
 
 dev_dependencies:

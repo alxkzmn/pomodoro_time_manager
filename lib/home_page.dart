@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:analog_clock/analog_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -35,8 +36,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var pomodoros = Provider.of<Pomos>(context)
-                              .pomodoros;
+    var pomodoros = Provider.of<Pomos>(context).pomodoros;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title ?? ""),
@@ -171,28 +171,6 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
-                      TableRow(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 5),
-                            margin: EdgeInsets.all(2),
-                            child: Text(
-                              "",
-                              style: Theme.of(context).textTheme.headline6,
-                            ),
-                            alignment: Alignment.center,
-                            height: HomePage.CELL_HEIGHT,
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 5),
-                            margin: EdgeInsets.all(2),
-                            child: Text(
-                              "",
-                              style: Theme.of(context).textTheme.headline6,
-                            ),
-                          ),
-                        ],
-                      ),
                       labelValue(
                           context,
                           "TOTAL",
@@ -218,7 +196,7 @@ class _HomePageState extends State<HomePage> {
                             padding: EdgeInsets.symmetric(horizontal: 5),
                             margin: EdgeInsets.all(2),
                             decoration:
-                            BoxDecoration(color: Colors.lightBlue.shade50),
+                                BoxDecoration(color: Colors.lightBlue.shade50),
                             child: Text(
                               "HOURS IN DAY",
                               style: Theme.of(context).textTheme.headline6,
@@ -230,13 +208,12 @@ class _HomePageState extends State<HomePage> {
                             padding: EdgeInsets.symmetric(horizontal: 5),
                             margin: EdgeInsets.all(2),
                             decoration:
-                            BoxDecoration(color: Colors.purple.shade50),
+                                BoxDecoration(color: Colors.purple.shade50),
                             child: TextField(
                               textAlign: TextAlign.center,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "HRS YOU WANT TO WORK"),
-
                             ),
                           )
                         ],
@@ -244,14 +221,36 @@ class _HomePageState extends State<HomePage> {
                       labelValue(
                           context,
                           "HOURS PLANNED",
-                          (pomodoros
-                              .fold<int>(
-                              0,
-                                  (previousValue, element) =>
-                              previousValue + element.length)
-                          /2).toString()),
+                          (pomodoros.fold<int>(
+                                      0,
+                                      (previousValue, element) =>
+                                          previousValue + element.length) /
+                                  2)
+                              .toString()),
                     ],
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: AnalogClock(
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 2.0, color: Colors.black),
+                          color: Colors.transparent,
+                          shape: BoxShape.circle),
+                      width: 150.0,
+                      height: 150.0,
+                      isLive: true,
+                      hourHandColor: Colors.black,
+                      minuteHandColor: Colors.black,
+                      showSecondHand: false,
+                      numberColor: Colors.black87,
+                      showNumbers: true,
+                      textScaleFactor: 1.4,
+                      showTicks: true,
+                      showDigitalClock: false,
+                      datetime: DateTime.now(),
+                    ),
+                  ),
+
                   /* Expanded(
                   flex: 1,
                   child: GaugeChart.withSampleData(),
