@@ -9,10 +9,10 @@
     <meta content="yes" name="apple-mobile-web-app-capable">
     <meta content="black" name="apple-mobile-web-status-bar-style">
     <meta content="timemanager" name="apple-mobile-web-app-title">
-    <link href="/icons/Icon-192.png" rel="apple-touch-icon">
+    <link href="icons/Icon-192.png" rel="apple-touch-icon">
 
     <title>timemanager</title>
-    <link href="/manifest.json" rel="manifest">
+    <link href="manifest.json" rel="manifest">
     <base href="$FLUTTER_BASE_HREF">
 </head>
 <body>
@@ -22,7 +22,7 @@
 <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/flutter_service_worker.js');
+        navigator.serviceWorker.register('flutter_service_worker.js');
       });
     }
 
